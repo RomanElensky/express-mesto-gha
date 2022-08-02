@@ -1,12 +1,13 @@
 const Card = require('../models/card');
+const { ErrorCode, NotFound, DeafaultError } = require('../utils/errors');
 
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => {
-      res.status(200).send(cards);
+      res.send(cards);
     })
     .catch(() => {
-      res.status(500).send({ message: 'Нет ответа от сервера' });
+      res.status(ErrorCode).send({ message: 'Нет ответа от сервера' });
     });
 };
 
@@ -14,13 +15,13 @@ module.exports.postCard = (req, res) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => {
-      res.status(201).send(card);
+      res.send(card);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Введены некорректные данные' });
+        res.status(ErrorCode).send({ message: 'Введены некорректные данные' });
       } else {
-        res.status(500).send({ message: 'Нет ответа от сервера' });
+        res.status(DeafaultError).send({ message: 'Нет ответа от сервера' });
       }
     });
 };
@@ -29,16 +30,16 @@ module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (card) {
-        res.status(200).send({ card });
+        res.send({ card });
       } else {
-        res.status(404).send({ message: 'Карточка не найдена' });
+        res.status(ErrorCode).send({ message: 'Карточка не найдена' });
       }
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        res.status(400).send({ message: 'Введены некорректные данные' });
+        res.status(ErrorCode).send({ message: 'Введены некорректные данные' });
       } else {
-        res.status(500).send({ message: 'Нет ответа от сервера' });
+        res.status(DeafaultError).send({ message: 'Нет ответа от сервера' });
       }
     });
 };
@@ -51,16 +52,16 @@ module.exports.likeCard = (req, res) => {
   )
     .then((card) => {
       if (card) {
-        res.status(200).send({ card });
+        res.send({ card });
       } else {
-        res.status(404).send({ message: 'Карточка не найдена' });
+        res.status(NotFound).send({ message: 'Карточка не найдена' });
       }
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        res.status(400).send({ message: 'Введены некорректные данные' });
+        res.status(ErrorCode).send({ message: 'Введены некорректные данные' });
       } else {
-        res.status(500).send({ message: 'Нет ответа от сервера' });
+        res.status(DeafaultError).send({ message: 'Нет ответа от сервера' });
       }
     });
 };
@@ -73,16 +74,16 @@ module.exports.deleteLike = (req, res) => {
   )
     .then((card) => {
       if (card) {
-        res.status(200).send({ card });
+        res.send({ card });
       } else {
-        res.status(404).send({ message: 'Карточка не найдена' });
+        res.status(NotFound).send({ message: 'Карточка не найдена' });
       }
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        res.status(400).send({ message: 'Введены некорректные данные' });
+        res.status(ErrorCode).send({ message: 'Введены некорректные данные' });
       } else {
-        res.status(500).send({ message: 'Нет ответа от сервера' });
+        res.status(DeafaultError).send({ message: 'Нет ответа от сервера' });
       }
     });
 };
