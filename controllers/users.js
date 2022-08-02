@@ -11,11 +11,11 @@ module.exports.getUsers = (req, res) => {
     });
 };
 
-module.exports.getUserById = (req, res) => {
-  User.findById(req.params.userId)
+module.exports.getUserId = (req, res) => {
+  User.findId(req.params.userId)
     .then((user) => {
       if (user) {
-        res.send({ user });
+        res.status(200).send({ user });
       } else {
         res.status(NotFound).send({ message: 'Пользователь не найден' });
       }
