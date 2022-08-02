@@ -5,7 +5,7 @@ module.exports.getUsers = (req, res) => {
     .then((users) => {
       res.status(200).send({ users });
     })
-    .catch((err) => {
+    .catch(() => {
       res.status(500).send({ message: 'Нет ответа от сервера' });
     });
 };

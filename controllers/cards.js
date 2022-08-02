@@ -5,7 +5,7 @@ module.exports.getCards = (req, res) => {
     .then((cards) => {
       res.status(200).send(cards);
     })
-    .catch((err) => {
+    .catch(() => {
       res.status(500).send({ message: 'Нет ответа от сервера' });
     });
 };
