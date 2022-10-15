@@ -24,11 +24,11 @@ app.use('*', (req, res) => {
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '62e8cec40a94085632b3de5f',
+    _id: '634a9f09b6c26ed5c1bfbc26',
   };
   next();
 });
 
 app.listen(PORT, () => {
-  console.log('PORT подключен');
+  console.log(`Подключен к порту ${PORT}`);
 });
