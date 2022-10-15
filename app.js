@@ -2,7 +2,7 @@ const express = require('express');
 
 const app = express();
 const { PORT = 3000 } = process.env;
-const mongoose = require('mongoose');
+const { default: mongoose } = require('mongoose');
 const bodyParser = require('body-parser');
 const routerUsers = require('./routes/users');
 const routerCards = require('./routes/cards');
