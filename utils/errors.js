@@ -1,7 +1,7 @@
-const ErrorCode = 400;
-const NotFound = 404;
-const DeafaultError = 500;
+const ERROR_CODE = 400;
+const NOT_FOUND = 404;
+const ERROR_DEFAULT = 500;
 
 module.exports = {
-  ErrorCode, NotFound, DeafaultError,
+  ERROR_CODE, NOT_FOUND, ERROR_DEFAULT,
 };
