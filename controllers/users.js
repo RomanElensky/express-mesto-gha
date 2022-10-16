@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const { ErrorCode, NotFound, DeafaultError } = require('../utils/errors');
+const { ERROR_CODE, NOT_FOUND, ERROR_DEFAULT } = require('../utils/errors');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -7,7 +7,7 @@ module.exports.getUsers = (req, res) => {
       res.send({ users });
     })
     .catch(() => {
-      res.status(DeafaultError).send({ message: 'Нет ответа от сервера' });
+      res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию.' });
     });
 };
 
@@ -17,14 +17,14 @@ module.exports.getUserById = (req, res) => {
       if (user) {
         res.send({ user });
       } else {
-        res.status(NotFound).send({ message: 'Пользователь не найден' });
+        res.status(NOT_FOUND).send({ message: 'Пользователь по указанному _id не найден.' });
       }
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        res.status(ErrorCode).send({ message: 'Введены некорректные данные' });
+        res.status(ERROR_CODE).send({ message: 'Введены некорректные данные' });
       } else {
-        res.status(DeafaultError).send({ message: 'Нет ответа от сервера' });
+        res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию.' });
       }
     });
 };
@@ -38,9 +38,9 @@ module.exports.postUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(ErrorCode).send({ message: 'Введены некорректные данные' });
+        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные при создании пользователя.' });
       } else {
-        res.status(DeafaultError).send({ message: 'Нет ответа от сервера' });
+        res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию.' });
       }
     });
 };
@@ -54,11 +54,11 @@ module.exports.patchProfile = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(NotFound).send({ message: 'Пользователь не найден' });
+        res.status(NOT_FOUND).send({ message: 'Пользователь с указанным _id не найден' });
       } else if (err.name === 'ValidationError') {
-        res.status(ErrorCode).send({ message: 'Введены некорректные данные' });
+        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
       } else {
-        res.status(DeafaultError).send({ message: 'Нет ответа от сервера' });
+        res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию.' });
       }
     });
 };
@@ -72,11 +72,11 @@ module.exports.patchAvatar = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(NotFound).send({ message: 'Пользователь не найден' });
+        res.status(NOT_FOUND).send({ message: 'Пользователь с указанным _id не найден' });
       } else if (err.name === 'ValidationError') {
-        res.status(ErrorCode).send({ message: 'Введены некорректные данные' });
+        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные при обновлении аватара.' });
       } else {
-        res.status(DeafaultError).send({ message: 'Нет ответа от сервера' });
+        res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию.' });
       }
     });
 };
