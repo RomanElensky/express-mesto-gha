@@ -1,5 +1,5 @@
 const Card = require('../models/card');
-const { ERROR_CODE, NOT_FOUND, ERROR_DEFAULT } = require('../utils/errors');
+const { ErrorCode, NotFound, DeafaultError } = require('../utils/errors');
 
 module.exports.getCards = (req, res) => {
   Card.find({})
@@ -7,7 +7,7 @@ module.exports.getCards = (req, res) => {
       res.send(cards);
     })
     .catch(() => {
-      res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию.' });
+      res.status(DeafaultError).send({ message: 'Ошибка по умолчанию.' });
     });
 };
 
@@ -20,9 +20,9 @@ module.exports.postCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные при создании карточки.' });
+        res.status(ErrorCode).send({ message: 'Переданы некорректные данные при создании карточки.' });
       } else {
-        res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию.' });
+        res.status(DeafaultError).send({ message: 'Ошибка по умолчанию.' });
       }
     });
 };
@@ -33,14 +33,14 @@ module.exports.deleteCard = (req, res) => {
       if (card) {
         res.send({ card });
       } else {
-        res.status(NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена.' });
+        res.status(NotFound).send({ message: 'Карточка с указанным _id не найдена.' });
       }
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные при удалении карточки.' });
+        res.status(ErrorCode).send({ message: 'Переданы некорректные данные при удалении карточки.' });
       } else {
-        res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию.' });
+        res.status(DeafaultError).send({ message: 'Ошибка по умолчанию.' });
       }
     });
 };
@@ -55,14 +55,14 @@ module.exports.likeCard = (req, res) => {
       if (card) {
         res.send({ card });
       } else {
-        res.status(NOT_FOUND).send({ message: 'Передан несуществующий _id карточки.' });
+        res.status(NotFound).send({ message: 'Передан несуществующий _id карточки.' });
       }
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные для постановки лайка.' });
+        res.status(ErrorCode).send({ message: 'Переданы некорректные данные для постановки лайка.' });
       } else {
-        res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию.' });
+        res.status(DeafaultError).send({ message: 'Ошибка по умолчанию.' });
       }
     });
 };
@@ -77,14 +77,14 @@ module.exports.deleteLike = (req, res) => {
       if (card) {
         res.send({ card });
       } else {
-        res.status(NOT_FOUND).send({ message: 'Передан несуществующий _id карточки.' });
+        res.status(NotFound).send({ message: 'Передан несуществующий _id карточки.' });
       }
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные для постановки лайка.' });
+        res.status(ErrorCode).send({ message: 'Переданы некорректные данные для постановки лайка.' });
       } else {
-        res.status(ERROR_DEFAULT).send({ message: 'Ошибка по умолчанию.' });
+        res.status(DeafaultError).send({ message: 'Ошибка по умолчанию.' });
       }
     });
 };

@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 
 const routerUsers = require('./routes/users');
 const routerCards = require('./routes/cards');
-const { NOT_FOUND } = require('./utils/errors');
+const { NotFound } = require('./utils/errors');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 app.use('/users', routerUsers);
 app.use('/cards', routerCards);
 app.use('*', (req, res) => {
-  res.status(NOT_FOUND).send({ message: 'Страница не найдена' });
+  res.status(NotFound).send({ message: 'Страница не найдена' });
 });
 
 app.listen(PORT, () => {
