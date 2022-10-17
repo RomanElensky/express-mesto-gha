@@ -7,10 +7,13 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const routerUsers = require('./routes/users');
 const routerCards = require('./routes/cards');
+const { consoleLogger } = require('./middlewares/logger');
 
 const { NotFound } = require('./utils/errors');
 
 const { PORT = 3000 } = process.env;
+
+app.use(consoleLogger);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

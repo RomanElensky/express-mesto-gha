@@ -11,26 +11,9 @@ module.exports.getUsers = (req, res) => {
     });
 };
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
+  console.log('req.params: ', req.params);
   User.findById(req.params.userId)
-    .then((user) => {
-      if (user) {
-        res.send({ user });
-      } else {
-        res.status(NotFound).send({ message: 'Пользователь по указанному _id не найден' });
-      }
-    })
-    .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        res.status(ErrorCode).send({ message: 'Переданы некорректные данные при поиске пользователя' });
-      } else {
-        res.status(DeafaultError).send({ message: 'Ошибка по умолчанию' });
-      }
-    });
-};
-
-module.exports.getUserInfo = (req, res) => {
-  User.findById(req.user._id)
     .then((user) => {
       if (user) {
         res.send({ user });
