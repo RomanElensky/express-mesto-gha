@@ -21,7 +21,7 @@ module.exports.getUserById = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
+      if (err.name === 'CastError') {
         res.status(ErrorCode).send({ message: 'Переданы некорректные данные при поиске пользователя' });
       } else {
         res.status(DeafaultError).send({ message: 'Ошибка по умолчанию' });
