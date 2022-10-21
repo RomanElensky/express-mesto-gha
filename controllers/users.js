@@ -1,5 +1,9 @@
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const { ErrorCode, NotFound, DeafaultError } = require('../utils/errors');
+const {
+  ErrorCode, NotFound, DeafaultError, UnauthorizedError, ConflictError,
+} = require('../utils/errors');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -29,19 +33,47 @@ module.exports.getUserById = (req, res) => {
     });
 };
 
-module.exports.postUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
+module.exports.getUser = (req, res) => {
+  User.findById(req.user._id)
     .then((user) => {
-      res.send({ user });
+      if (user) {
+        res.send({ user });
+      } else {
+        res.status(NotFound).send({ message: 'Пользователь по указанному _id не найден' });
+      }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(ErrorCode).send({ message: 'Переданы некорректные данные при создании пользователя' });
+      if (err.name === 'CastError') {
+        res.status(ErrorCode).send({ message: 'Переданы некорректные данные при поиске пользователя' });
       } else {
         res.status(DeafaultError).send({ message: 'Ошибка по умолчанию' });
       }
     });
+};
+
+module.exports.postUser = (req, res) => {
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    })
+      .then((user) => {
+        res.status(200).send({
+          data: {
+            name, about, avatar, email,
+          },
+        });
+      })
+      .catch((err) => {
+        if (err.name === 'ValidationError') {
+          res.status(ErrorCode).send({ message: 'Переданы некорректные данные при создании пользователя' });
+        }
+        if (err.code === 11000) {
+          res.status(ConflictError).send({ message: 'Такой email уже зарегестрирован' });
+        }
+      }));
 };
 
 module.exports.patchProfile = (req, res) => {
@@ -75,5 +107,21 @@ module.exports.patchAvatar = (req, res) => {
       } else {
         res.status(DeafaultError).send({ message: 'Ошибка по умолчанию' });
       }
+    });
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign(
+        { _id: user._id },
+        'some-secret-key',
+        { expiresIn: '7d' },
+      );
+      res.send({ token });
+    })
+    .catch(() => {
+      res.status(UnauthorizedError).send({ message: 'Ошибка авторизации' });
     });
 };
