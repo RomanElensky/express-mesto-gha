@@ -22,9 +22,6 @@ const { PORT = 3000 } = process.env;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post('/signin', validateLogin, login);
-app.post('/signup', validatePostUser, postUser);
-
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
   res.status(statusCode).send({
@@ -33,13 +30,17 @@ app.use((err, req, res, next) => {
   next();
 });
 
+app.use(auth);
+
 app.use('/users', routerUsers);
 app.use('/cards', routerCards);
 app.use('*', (req, res) => {
   res.status(NotFound).send({ message: 'Страница не найдена' });
 });
 app.use(errors());
-app.use(auth);
+
+app.post('/signin', validateLogin, login);
+app.post('/signup', validatePostUser, postUser);
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
