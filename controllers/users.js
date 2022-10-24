@@ -60,11 +60,9 @@ module.exports.postUser = (req, res) => {
       name, about, avatar, email, password: hash,
     })
       .then((user) => {
-        res.status(200).send({
-          data: {
-            name, about, avatar, email,
-          },
-        });
+        const newUser = user.toObject();
+        delete newUser.password;
+        res.send(newUser);
       })
       .catch((err) => {
         if (err.name === 'ValidationError') {
