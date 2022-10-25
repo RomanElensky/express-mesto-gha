@@ -1,26 +1,29 @@
 const express = require('express');
+
+const app = express();
+
+const mongoose = require('mongoose');
+
 require('dotenv').config();
 
-const { default: mongoose } = require('mongoose');
-
-const { PORT = 3000 } = process.env;
-const app = express();
-const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 
-const auth = require('./middlewares/auth');
+const bodyParser = require('body-parser');
+
+const { login, postUser } = require('./controllers/users');
 const routerUsers = require('./routes/users');
 const routerCards = require('./routes/cards');
-const NotFoundError = require('./errors/not-found-err');
-const { login, postUser } = require('./controllers/users');
+const auth = require('./middlewares/auth');
 const { validatePostUser, validateLogin } = require('./middlewares/validators');
+const NotFoundError = require('./errors/not-found-err');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-mongoose.connect('mongodb://localhost:27017/mestodb', {
-  useNewUrlParser: true,
-});
+const { PORT = 3000 } = process.env;
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/signin', validateLogin, login);
 app.post('/signup', validatePostUser, postUser);
@@ -32,7 +35,6 @@ app.use('/cards', routerCards);
 app.use('*', () => {
   throw new NotFoundError('Страница не найдена');
 });
-
 app.use(errors());
 
 app.use((err, req, res, next) => {
@@ -43,6 +45,10 @@ app.use((err, req, res, next) => {
   next();
 });
 
+mongoose.connect('mongodb://localhost:27017/mestodb', {
+  useNewUrlParser: true,
+});
+
 app.listen(PORT, () => {
-  console.log('all is right');
+  console.log(`Подключен к порту ${PORT}`);
 });
