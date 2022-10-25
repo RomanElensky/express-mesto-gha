@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
       validator(link) {
         return /^(https?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s@]*/.test(link);
       },
-      message: 'Неправильная ссылка',
+      message: 'Некорректная ссылка',
     },
   },
   email: {
@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: (email) => validator.isEmail(email),
-      message: 'Введены неверные данные',
+      message: 'Введен неверный email',
     },
   },
   password: {
@@ -39,20 +39,19 @@ const userSchema = new mongoose.Schema({
     required: true,
     select: false,
   },
-}, {
-  versionKey: false,
 });
 
-userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
+// eslint-disable-next-line func-names
+userSchema.statics.findUserbyCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new Error('Введены неверные данные'));
+        return Promise.reject(new Error('Неверные данные входа'));
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new Error('Введены неверные данные'));
+            return Promise.reject(new Error('Неверные данные входа'));
           }
           return user;
         });
