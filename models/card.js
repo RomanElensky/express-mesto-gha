@@ -14,7 +14,7 @@ const cardSchema = new mongoose.Schema({
       validator(link) {
         return /^(https?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s@]*/.test(link);
       },
-      message: 'Неправильная ссылка',
+      message: 'Некорректная ссылка',
     },
   },
   owner: {
@@ -33,8 +33,6 @@ const cardSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-}, {
-  versionKey: false,
 });
 
 module.exports = mongoose.model('card', cardSchema);

@@ -11,7 +11,7 @@ const { errors } = require('celebrate');
 const auth = require('./middlewares/auth');
 const routerUsers = require('./routes/users');
 const routerCards = require('./routes/cards');
-const { NotFound } = require('./utils/errors');
+const NotFoundError = require('./errors/not-found-err');
 const { login, postUser } = require('./controllers/users');
 const { validatePostUser, validateLogin } = require('./middlewares/validators');
 
@@ -30,7 +30,7 @@ app.use(auth);
 app.use('/users', routerUsers);
 app.use('/cards', routerCards);
 app.use('*', () => {
-  throw new NotFound('Страница не найдена');
+  throw new NotFoundError('Страница не найдена');
 });
 
 app.use(errors());
