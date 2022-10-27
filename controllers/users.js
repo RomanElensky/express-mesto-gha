@@ -14,11 +14,23 @@ module.exports.getUsers = (req, res, next) => {
     .catch(next);
 };
 
+module.exports.getUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (user) {
+        res.send({ user });
+      } else {
+        throw new NotFoundError('Пользователь по указанному ID не найден');
+      }
+    })
+    .catch(next);
+};
+
 module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователя с такими данными не существует');
+        throw new NotFoundError('Такого пользователя не существует');
       }
       res.send(user);
     })
@@ -30,23 +42,10 @@ module.exports.getUserById = (req, res, next) => {
     });
 };
 
-module.exports.getUser = (req, res, next) => {
-  User.findById(req.user._id)
-    .then((user) => {
-      if (user) {
-        res.send({ user });
-      } else {
-        throw new NotFoundError('Пользователь по указанному _id не найден.');
-      }
-    })
-    .catch(next);
-};
-
 module.exports.postUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
@@ -60,10 +59,10 @@ module.exports.postUser = (req, res, next) => {
       })
       .catch((err) => {
         if (err.name === 'ValidationError') {
-          return next(new BadRequestError('Переданы некорректные данные при создании пользователя.'));
+          return next(new BadRequestError('Введены некорректные данные при создании пользователя'));
         }
         if (err.code === 11000) {
-          return next(new ConflictError('Данный email уже зарегистрирован.'));
+          return next(new ConflictError('Данный email уже зарегистрирован'));
         }
         return next(err);
       }));
@@ -71,14 +70,13 @@ module.exports.postUser = (req, res, next) => {
 
 module.exports.patchProfile = (req, res, next) => {
   const { name, about } = req.body;
-
   User.findOneAndUpdate({ _id: req.user._id }, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       res.send({ user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new BadRequestError('Переданы некорректные данные при обновлении профиля.'));
+        return next(new BadRequestError('Введены некорректные данные при обновлении профиля'));
       }
       return next(err);
     });
@@ -86,14 +84,13 @@ module.exports.patchProfile = (req, res, next) => {
 
 module.exports.patchAvatar = (req, res, next) => {
   const { avatar } = req.body;
-
   User.findOneAndUpdate({ _id: req.user._id }, { avatar }, { new: true, runValidators: true })
     .then((user) => {
       res.send({ user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new BadRequestError('Переданы некорректные данные при обновлении аватара.'));
+        return next(new BadRequestError('Введены некорректные данные при обновлении аватара'));
       }
       return next(err);
     });
@@ -101,7 +98,6 @@ module.exports.patchAvatar = (req, res, next) => {
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-
   return User.findUserbyCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
@@ -112,6 +108,6 @@ module.exports.login = (req, res, next) => {
       res.send({ token });
     })
     .catch(() => {
-      next(new UnauthorizedError('Необходима авторизация'));
+      next(new UnauthorizedError('Ошибка авторизации'));
     });
 };
