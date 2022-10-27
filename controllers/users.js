@@ -30,7 +30,6 @@ module.exports.getUserById = (req, res, next) => {
     });
 };
 
-// Получаем данные авторизованного пользователя
 module.exports.getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
@@ -43,7 +42,6 @@ module.exports.getUser = (req, res, next) => {
     .catch(next);
 };
 
-// Создаем пользователя
 module.exports.postUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
@@ -53,7 +51,7 @@ module.exports.postUser = (req, res, next) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     })
-      .then((user) => { // eslint-disable-line no-unused-vars
+      .then(() => {
         res.status(200).send({
           data: {
             name, about, avatar, email,
@@ -101,7 +99,6 @@ module.exports.patchAvatar = (req, res, next) => {
     });
 };
 
-// Модуль авторизации
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
