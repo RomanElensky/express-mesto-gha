@@ -2,10 +2,10 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
-const NotFoundError = require('../errors/not-found-err');
-const BadRequest = require('../errors/bad-request');
-const Unauthorized = require('../errors/unauthorized');
-const Conflict = require('../errors/сonflict');
+const NotFoundError = require('../errors/not-found-error');
+const BadRequestError = require('../errors/bad-request-error');
+const UnauthorizedError = require('../errors/unauthorized-error');
+const ConflictError = require('../errors/сonflict-error');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -25,7 +25,7 @@ module.exports.getUserById = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return next(new BadRequest('Введены некорректные данные'));
+        return next(new BadRequestError('Введены некорректные данные'));
       }
       return next(err);
     });
@@ -63,10 +63,10 @@ module.exports.postUser = (req, res, next) => {
       })
       .catch((err) => {
         if (err.name === 'ValidationError') {
-          return next(new BadRequest('Переданы некорректные данные при создании пользователя.'));
+          return next(new BadRequestError('Переданы некорректные данные при создании пользователя.'));
         }
         if (err.code === 11000) {
-          return next(new Conflict('Данный email уже зарегистрирован.'));
+          return next(new ConflictError('Данный email уже зарегистрирован.'));
         }
         return next(err);
       }));
@@ -81,7 +81,7 @@ module.exports.patchProfile = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new BadRequest('Переданы некорректные данные при обновлении профиля.'));
+        return next(new BadRequestError('Переданы некорректные данные при обновлении профиля.'));
       }
       return next(err);
     });
@@ -96,7 +96,7 @@ module.exports.patchAvatar = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new BadRequest('Переданы некорректные данные при обновлении аватара.'));
+        return next(new BadRequestError('Переданы некорректные данные при обновлении аватара.'));
       }
       return next(err);
     });
@@ -116,6 +116,6 @@ module.exports.login = (req, res, next) => {
       res.send({ token });
     })
     .catch(() => {
-      next(new Unauthorized('Необходима авторизация'));
+      next(new UnauthorizedError('Необходима авторизация'));
     });
 };

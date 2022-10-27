@@ -15,7 +15,7 @@ const routerUsers = require('./routes/users');
 const routerCards = require('./routes/cards');
 const auth = require('./middlewares/auth');
 const { validatePostUser, validateLogin } = require('./middlewares/validators');
-const NotFoundError = require('./errors/not-found-err');
+const NotFoundError = require('./errors/not-found-error');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
