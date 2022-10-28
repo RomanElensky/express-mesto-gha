@@ -1,6 +1,10 @@
 const router = require('express').Router();
 const {
-  getCards, postCard, deleteCard, likeCard, deleteLike,
+  getCards,
+  postCard,
+  deleteCard,
+  likeCard,
+  deleteLike,
 } = require('../controllers/cards');
 const { validateCardId, validatePostCard } = require('../middlewares/validators');
 
