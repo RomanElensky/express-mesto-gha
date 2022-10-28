@@ -43,16 +43,16 @@ const userSchema = new mongoose.Schema({
   versionKey: false,
 });
 
-userSchema.statics.findUserbyCredentials = function (email, password) {
+userSchema.statics.findUserbyCredentials = function findUserbyCredentials(email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new Error('Неверные данные входа'));
+        return Promise.reject(new Error('Неверные данные для входа'));
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new Error('Неверные данные входа'));
+            return Promise.reject(new Error('Неверные данные для входа'));
           }
           return user;
         });
